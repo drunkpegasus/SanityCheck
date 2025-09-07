@@ -1,11 +1,11 @@
+// In schemas/movie.ts
+
 import {defineField, defineType} from 'sanity'
-import {MdLocalMovies as icon} from 'react-icons/md'
 
 export default defineType({
   name: 'movie',
-  title: 'Movie',
+  title: 'Movie Review', // Changed title to be more specific
   type: 'document',
-  icon,
   fields: [
     defineField({
       name: 'title',
@@ -18,68 +18,38 @@ export default defineType({
       type: 'slug',
       options: {
         source: 'title',
-        maxLength: 100,
+        maxLength: 96,
       },
     }),
     defineField({
-      name: 'overview',
-      title: 'Overview',
-      type: 'blockContent',
+      name: 'author',
+      title: 'Author',
+      type: 'string',
     }),
     defineField({
-      name: 'releaseDate',
-      title: 'Release date',
+      name: 'mainImage',
+      title: 'Main image',
+      type: 'image',
+      options: {
+        hotspot: true, // This lets you crop the image better
+      },
+    }),
+    defineField({
+      name: 'excerpt',
+      title: 'Excerpt',
+      type: 'text',
+      description: 'A short summary of the review for the list page.',
+    }),
+    defineField({
+      name: 'publishedAt',
+      title: 'Published at',
       type: 'datetime',
     }),
     defineField({
-      name: 'poster',
-      title: 'Poster Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
-    defineField({
-      name: 'externalId',
-      title: 'External ID',
-      type: 'number',
-    }),
-    defineField({
-      name: 'popularity',
-      title: 'Popularity',
-      type: 'number',
-    }),
-    defineField({
-      name: 'castMembers',
-      title: 'Cast Members',
-      type: 'array',
-      of: [{type: 'castMember'}],
-    }),
-    defineField({
-      name: 'crewMembers',
-      title: 'Crew Members',
-      type: 'array',
-      of: [{type: 'crewMember'}],
+      name: 'body',
+      title: 'Body',
+      description: 'The full review content goes here.',
+      type: 'blockContent', // This is the rich text editor
     }),
   ],
-  preview: {
-    select: {
-      title: 'title',
-      date: 'releaseDate',
-      media: 'poster',
-      castName0: 'castMembers.0.person.name',
-      castName1: 'castMembers.1.person.name',
-    },
-    prepare(selection) {
-      const year = selection.date && selection.date.split('-')[0]
-      const cast = [selection.castName0, selection.castName1].filter(Boolean).join(', ')
-
-      return {
-        title: `${selection.title} ${year ? `(${year})` : ''}`,
-        date: selection.date,
-        subtitle: cast,
-        media: selection.media,
-      }
-    },
-  },
 })
